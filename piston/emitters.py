@@ -360,7 +360,7 @@ class XMLEmitter(Emitter):
                 xml.startElement(key, {})
                 self._to_xml(xml, value)
                 xml.endElement(key)
-        else:
+        elif data is not None:
             xml.characters(smart_unicode(data))
 
     def render(self, request):
