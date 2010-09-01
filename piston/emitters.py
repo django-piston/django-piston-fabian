@@ -20,6 +20,7 @@ except NameError:
                 return True
         return False
 
+from django.contrib.contenttypes.generic import GenericForeignKey
 from django.db.models.query import QuerySet
 from django.db.models import Model, permalink
 from django.utils import simplejson
@@ -159,7 +160,7 @@ class Emitter(object):
 
                 if not fields:
                     """
-                    Fields was not specified, try to find teh correct
+                    Fields was not specified, try to find the correct
                     version in the typemapper we were sent.
                     """
                     mapped = self.in_typemapper(type(data), self.anonymous)
@@ -203,6 +204,8 @@ class Emitter(object):
                             if f.attname[:-3] in get_fields:
                                 ret[f.name] = _fk(data, f)
                                 get_fields.remove(f.name)
+                    elif isinstance(f, GenericForeignKey):
+                        ret[f.name] = _model(getattr(data, f.name))
 
                 for mf in data._meta.many_to_many:
                     if mf.serialize and mf.attname not in met_fields:
