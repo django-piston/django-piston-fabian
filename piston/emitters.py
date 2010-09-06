@@ -204,8 +204,10 @@ class Emitter(object):
                             if f.attname[:-3] in get_fields:
                                 ret[f.name] = _fk(data, f)
                                 get_fields.remove(f.name)
-                    elif isinstance(f, GenericForeignKey):
-                        ret[f.name] = _model(getattr(data, f.name))
+                    elif isinstance(f, GenericForeignKey) and f.name in \
+                        get_fields:
+                            ret[f.name] = _model(getattr(data, f.name))
+                            get_fields.remove(f.name)
 
                 for mf in data._meta.many_to_many:
                     if mf.serialize and mf.attname not in met_fields:
